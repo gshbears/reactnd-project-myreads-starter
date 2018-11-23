@@ -5,10 +5,11 @@ class BuildBook extends Component {
   static propTypes =  {
     book: PropTypes.object.isRequired,
     moveBook: PropTypes.func.isRequired,
-    currentShelf: PropTypes.string.isRequired
+    currentShelf: PropTypes.string.isRequired,
+    ribbonName: PropTypes.string.isRequired
   }
   render() {
-    const { book, moveBook, currentShelf } = this.props
+    const { book, moveBook, currentShelf, ribbonName } = this.props
 
     if ( typeof (book.imageLinks) !== 'undefined' && typeof (book.title) !== 'undefined' && typeof (book.authors) !== 'undefined' ){
       return (
@@ -16,6 +17,7 @@ class BuildBook extends Component {
          <li key={book.id}>
             <div className="book">
               <div className="book-top">
+                {(ribbonName !== 'none') ? <div className={`ribbon${ribbonName}`} ><span>{ribbonName}</span></div>  : ''}
                 <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})`}}></div>
                 <div className="book-shelf-changer">
                   <select onChange={e => moveBook(book,e.target.value)} value={currentShelf}>

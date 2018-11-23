@@ -13,8 +13,9 @@ class BooksApp extends Component {
     books: []
   }
 
-  componentDidMount() {
-    this.getAllBooks()
+  async componentDidMount() {
+    const books = await BooksAPI.getAll()
+    this.setState({ books })
   }
 
   getAllBooks = () => {
@@ -24,13 +25,15 @@ class BooksApp extends Component {
   }
 
   moveBook = (book, shelf) => {
-    console.log(shelf)
-      BooksAPI.update(book, shelf).then(
-          this.getAllBooks()
-      )
+    BooksAPI.update(book, shelf)
+      book.shelf = shelf
+      this.setState(state => ({
+        books: state.books.filter(b => b.id !== book.id).concat(book),
+      }));
   }
 
   render() {
+
     return (
       <div className="app">
         <Route exact path='/' render={() =>(

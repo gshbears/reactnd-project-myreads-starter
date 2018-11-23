@@ -1,19 +1,34 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Link } from 'react-router-dom'
 import sortBy from 'sort-by'
-import BuildBook from './BuildBook'
+import BuildShelf from './BuildShelf'
+import PropTypes from 'prop-types'
 
-class BookShelves extends Component {
-
+class BookShelves extends PureComponent {
+  static propTypes =  {
+    books: PropTypes.array.isRequired,
+    moveBook: PropTypes.func.isRequired
+  }
 
   render() {
+
     const { books, moveBook } = this.props
+    const shelves = [
+        {
+          title: 'Currently Reading',
+          shelf: 'currentlyReading',
+        },
+        {
+          title: 'Want to Read',
+          shelf: 'wantToRead',
+        },
+        {
+          title: 'Read',
+          shelf: 'read',
+        },
+      ];
 
     books.sort(sortBy('title'))
-
-    let currentlyReading = books.filter((book) => book.shelf === 'currentlyReading')
-    let wantToRead = books.filter((book) => book.shelf === 'wantToRead')
-    let read = books.filter((book) => book.shelf === 'read')
 
     return (
 
@@ -22,53 +37,15 @@ class BookShelves extends Component {
           <h1>MyReads</h1>
         </div>
         <div className="list-books-content">
-          <div>
-            <div className="bookshelf">
-              <h2 className="bookshelf-title">Currently Reading</h2>
-              <div className="bookshelf-books">
-                <ol className="books-grid">
-                  {currentlyReading.map(currentlyReading => {
-                   return  <BuildBook
-                   book={currentlyReading}
-                   key={currentlyReading.id}
-                   moveBook={moveBook}
-                   currentShelf = 'currentlyReading'
-                   />
-                  })}
-                </ol>
-              </div>
-            </div>
-            <div className="bookshelf">
-              <h2 className="bookshelf-title">Want to Read</h2>
-              <div className="bookshelf-books">
-                <ol className="books-grid">
-                {wantToRead.map(wantToRead => {
-                  return  <BuildBook
-                  book={wantToRead}
-                  key={wantToRead.id}
-                  moveBook={moveBook}
-                  currentShelf = 'wantToRead'
-                  />
-                })}
-                </ol>
-              </div>
-            </div>
-            <div className="bookshelf">
-              <h2 className="bookshelf-title">Read</h2>
-              <div className="bookshelf-books">
-                <ol className="books-grid">
-                {read.map(read => {
-                  return  <BuildBook
-                  book={read}
-                  key={read.id}
-                  moveBook={moveBook}
-                  currentShelf = 'read'
-                  />
-                })}
-                </ol>
-              </div>
-            </div>
-          </div>
+          {shelves.map(shelf => {
+           return  <BuildShelf
+            shelfBooks={books.filter((book) => book.shelf === shelf.shelf)}
+            key={shelf.shelf}
+            moveBook={moveBook}
+            shelf = {shelf.shelf}
+            shelfTitle = {shelf.title}
+            />
+          })}
         </div>
         <div className="open-search">
           <Link to='/search'>
